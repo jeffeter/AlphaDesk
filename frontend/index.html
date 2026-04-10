@@ -11,13 +11,61 @@
 <input id="titulo" placeholder="Título">
 <input id="descricao" placeholder="Descrição">
 <button onclick="criarChamado()">Criar</button>
-
+<button onclick="login()">Login</button>
+<button onclick="registrar()">Registrar</button>
 <ul id="lista"></ul>
 
 <script>
+    let token = "";
+
+    async function login() {
+        const res = await fetch ("http://localhost:3000/login", {
+            method: "post",
+            headers:{"content-type": "application/json"},
+            body: JSON.stringify({
+                email: "teste@teste.com",
+                senha: "123456"
+            })
+        });
+
+        const data = await res.json();
+        token = data.token;
+
+        console.log("token:", token)
+
+        carregarChamados();
+    }
+
+    async function registrar() {
+        const res = await fetch("http://localhost:3000/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                email: "teste@teste.com",
+                senha: "123456"
+            })
+        });
+
+        const text = await res.text();
+        console.log("Resposta register:", text);
+    }
+
     async function carregarChamados() {
-        const res = await fetch("http://localhost:3000/chamados");
-        const chamados = await res.json();
+        const res = await fetch("http://localhost:3000/chamados",{
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            }
+        });
+        let chamados;
+
+        try {
+            chamados = await res.json();
+        } catch {
+            const text = await res.text();
+            console.error("Erro:", text);
+            return;
+        }
 
         const lista = document.getElementById("lista");
         lista.innerHTML = "";
@@ -39,7 +87,10 @@
 
         await fetch("http://localhost:3000/chamados", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
             body: JSON.stringify({titulo, descricao})
         });
         
@@ -49,14 +100,16 @@
     async function atualizar(id, status) {
         await fetch(`http://localhost:3000/chamados/${id}`,{
             method: "PUT",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
             body: JSON.stringify({ status })  
         });
 
         carregarChamados();
     }
 
-carregarChamados();
 </script>
 
 </body>
