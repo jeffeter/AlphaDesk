@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaDesk</title>
+</head>
+<body>
+<h1>Chamados</h1>
+
+<input id="titulo" placeholder="Título">
+<input id="descricao" placeholder="Descrição">
+<button onclick="criarChamado()">Criar</button>
+
+<ul id="lista"></ul>
+
+<script>
+    async function carregarChamados() {
+        const res = await fetch("http://localhost:3000/chamados");
+        const chamados = await res.json();
+
+        const lista = document.getElementById("lista");
+        lista.innerHTML = "";
+
+        chamados.forEach(c => {
+            const item = document.createElement("li");
+            item.innerHTML = `
+                ${c.titulo} - ${c.status}
+                <button onclick="atualizar(${c.id}, 'em andamento')">Em andamento</button>
+                <button onclick="atualizar(${c.id}, 'resolvido')">Resolver</button>
+            `;
+            lista.appendChild(item);
+        });  
+    }
+
+    async function criarChamado() {
+        const titulo = document.getElementById("titulo").value;
+        const descricao = document.getElementById("descricao").value;
+
+        await fetch("http://localhost:3000/chamados", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({titulo, descricao})
+        });
+        
+        carregarChamados();
+    }
+
+    async function atualizar(id, status) {
+        await fetch(`http://localhost:3000/chamados/${id}`,{
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ status })  
+        });
+
+        carregarChamados();
+    }
+
+carregarChamados();
+</script>
+
+</body>
+</html>
