@@ -2,115 +2,32 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaDesk</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Chamados</h1>
 
-<input id="titulo" placeholder="Título">
-<input id="descricao" placeholder="Descrição">
-<button onclick="criarChamado()">Criar</button>
-<button onclick="login()">Login</button>
-<button onclick="registrar()">Registrar</button>
-<ul id="lista"></ul>
+<div class="container">
+    
+    <h1>AlphaDesk</h1>
 
-<script>
-    let token = "";
+    <input id="email" placeholder="Email">
+    <input id="senha" type="password" placeholder="Senha">
 
-    async function login() {
-        const res = await fetch ("http://localhost:3000/login", {
-            method: "post",
-            headers:{"content-type": "application/json"},
-            body: JSON.stringify({
-                email: "teste@teste.com",
-                senha: "123456"
-            })
-        });
+    <button class="btn-primary" onclick="login()">Login</button>
+    <button class="btn-success" onclick="registrar()">Registrar</button>
 
-        const data = await res.json();
-        token = data.token;
+    <hr>
 
-        console.log("token:", token)
+    <input id="titulo" placeholder="Título do chamado">
+    <input id="descricao" placeholder="Descrição">
 
-        carregarChamados();
-    }
+    <button class="btn-primary" onclick="criarChamado()">Criar Chamado</button>
 
-    async function registrar() {
-        const res = await fetch("http://localhost:3000/register", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                email: "teste@teste.com",
-                senha: "123456"
-            })
-        });
+    <ul id="lista"></ul>
 
-        const text = await res.text();
-        console.log("Resposta register:", text);
-    }
+</div>
 
-    async function carregarChamados() {
-        const res = await fetch("http://localhost:3000/chamados",{
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token
-            }
-        });
-        let chamados;
-
-        try {
-            chamados = await res.json();
-        } catch {
-            const text = await res.text();
-            console.error("Erro:", text);
-            return;
-        }
-
-        const lista = document.getElementById("lista");
-        lista.innerHTML = "";
-
-        chamados.forEach(c => {
-            const item = document.createElement("li");
-            item.innerHTML = `
-                ${c.titulo} - ${c.status}
-                <button onclick="atualizar(${c.id}, 'em andamento')">Em andamento</button>
-                <button onclick="atualizar(${c.id}, 'resolvido')">Resolver</button>
-            `;
-            lista.appendChild(item);
-        });  
-    }
-
-    async function criarChamado() {
-        const titulo = document.getElementById("titulo").value;
-        const descricao = document.getElementById("descricao").value;
-
-        await fetch("http://localhost:3000/chamados", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token
-            },
-            body: JSON.stringify({titulo, descricao})
-        });
-        
-        carregarChamados();
-    }
-
-    async function atualizar(id, status) {
-        await fetch(`http://localhost:3000/chamados/${id}`,{
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token
-            },
-            body: JSON.stringify({ status })  
-        });
-
-        carregarChamados();
-    }
-
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
