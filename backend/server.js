@@ -6,11 +6,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// importar rotas
 const authRoutes = require("./routes/auth");
 const chamadosRoutes = require("./routes/chamados");
 
-// usar rotas
 app.use(authRoutes);
 app.use("/chamados", chamadosRoutes);
 
