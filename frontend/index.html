@@ -8,23 +8,36 @@
 <body>
 
 <div class="container">
-    
+
     <h1>AlphaDesk</h1>
 
-    <input id="email" placeholder="Email">
-    <input id="senha" type="password" placeholder="Senha">
+    <div id="mensagem" style="display:none;"></div>
+    <div id="loading" style="display:none;">Carregando...</div>
 
-    <button class="btn-primary" onclick="login()">Login</button>
-    <button class="btn-success" onclick="registrar()">Registrar</button>
 
-    <hr>
+    <div id="auth">
+        <input id="email" placeholder="Email">
+        <input id="senha" type="password" placeholder="Senha">
 
-    <input id="titulo" placeholder="Título do chamado">
-    <input id="descricao" placeholder="Descrição">
+        <button type="button" class="btn-primary" onclick="login()">Login</button>
+        <button type="button" class="btn-success" onclick="registrar()">Registrar</button>
+    </div>
 
-    <button class="btn-primary" onclick="criarChamado()">Criar Chamado</button>
+    <!-- 🖥 APP -->
+    <div id="app" style="display:none;">
 
-    <ul id="lista"></ul>
+        <button class="btn-logout" onclick="logout()">Sair</button>
+
+        <hr>
+
+        <input id="titulo" placeholder="Título do chamado">
+        <input id="descricao" placeholder="Descrição">
+
+        <button type="button" class="btn-primary" onclick="criarChamado()">Criar Chamado</button>
+
+        <ul id="lista"></ul>
+
+    </div>
 
 </div>
 

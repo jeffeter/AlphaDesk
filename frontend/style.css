@@ -60,3 +60,27 @@ li {
     background: #f1f1f1;
     border-radius: 5px;
 }
+
+#mensagem {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.sucesso {
+    background: #22c55e;
+    color: white;
+}
+
+.erro {
+    background: #ef4444;
+    color: white;
+}
+
+#loading {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+}

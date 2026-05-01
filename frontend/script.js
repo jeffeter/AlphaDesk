@@ -1,5 +1,13 @@
 let token = "";
 
+const savedToken = localStorage.getItem("token");
+
+if (savedToken) {
+    token = savedToken;
+    mostrarApp();
+    carregarChamados();
+}
+
 async function registrar() {
     const email = document.getElementById("email").value;
     const senha = document.getElementById("senha").value;
@@ -14,20 +22,38 @@ async function registrar() {
 }
 
 async function login() {
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
+    mostrarLoading();
 
-    const res = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ email, senha })
-    });
+    try {
+        const email = document.getElementById("email").value;
+        const senha = document.getElementById("senha").value;
 
-    const data = await res.json();
-    token = data.token;
+        const res = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ email, senha })
+        });
 
-    console.log("Logado!");
-    carregarChamados();
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text);
+        }
+
+        const data = await res.json();
+        token = data.token;
+
+        localStorage.setItem("token", token);
+
+        mostrarMensagem("Login realizado!", "sucesso");
+
+        mostrarApp();
+        carregarChamados();
+
+    } catch (err) {
+        mostrarMensagem(err.message, "erro");
+    } finally {
+        esconderLoading();
+    }
 }
 
 async function carregarChamados() {
@@ -81,4 +107,38 @@ async function atualizar(id, status) {
     });
 
     carregarChamados();
+}
+
+function mostrarMensagem(texto, tipo) {
+    const el = document.getElementById("mensagem");
+    el.innerText = texto;
+    el.className = tipo;
+    el.style.display = "block";
+
+    setTimeout(() => {
+        el.style.display = "none";
+    }, 3000);
+}
+
+function mostrarLoading() {
+    document.getElementById("loading").style.display = "block";
+}
+
+function esconderLoading() {
+    document.getElementById("loading").style.display = "none";
+}
+
+function mostrarApp() {
+    document.getElementById("auth").style.display = "none";
+    document.getElementById("app").style.display = "block";
+}
+
+function logout() {
+    token = "";
+    localStorage.removeItem("token");
+
+    document.getElementById("auth").style.display = "block";
+    document.getElementById("app").style.display = "none";
+
+    mostrarMensagem("Saiu da conta", "sucesso");
 }
