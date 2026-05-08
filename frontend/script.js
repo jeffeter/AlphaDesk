@@ -1,3 +1,5 @@
+const API_URL = "https://SEU-APP.onrender.com";
+
 let token = "";
 
 const savedToken = localStorage.getItem("token");
@@ -9,16 +11,27 @@ if (savedToken) {
 }
 
 async function registrar() {
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
+    try {
+        const email = document.getElementById("email").value;
+        const senha = document.getElementById("senha").value;
 
-    const res = await fetch("http://localhost:3000/register", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ email, senha })
-    });
+        const res = await fetch(`${API_URL}/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, senha })
+        });
 
-    console.log(await res.text());
+        const mensagem = await res.text();
+
+        if (!res.ok) {
+            throw new Error(mensagem);
+        }
+
+        mostrarMensagem("Usuário registrado com sucesso!", "sucesso");
+
+    } catch (err) {
+        mostrarMensagem(err.message, "erro");
+        }
 }
 
 async function login() {
@@ -28,9 +41,9 @@ async function login() {
         const email = document.getElementById("email").value;
         const senha = document.getElementById("senha").value;
 
-        const res = await fetch("http://localhost:3000/login", {
+        const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, senha })
         });
 
@@ -40,6 +53,7 @@ async function login() {
         }
 
         const data = await res.json();
+
         token = data.token;
 
         localStorage.setItem("token", token);
@@ -47,6 +61,7 @@ async function login() {
         mostrarMensagem("Login realizado!", "sucesso");
 
         mostrarApp();
+
         carregarChamados();
 
     } catch (err) {
@@ -57,62 +72,104 @@ async function login() {
 }
 
 async function carregarChamados() {
-    const res = await fetch("http://localhost:3000/chamados", {
-        headers: {
-        "Authorization": token
+    try {
+        const res = await fetch(`${API_URL}/chamados`, {
+            headers: {
+                "Authorization": token
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error("Erro ao carregar chamados");
         }
-    });
 
-    const chamados = await res.json();
+        const chamados = await res.json();
 
-    const lista = document.getElementById("lista");
-    lista.innerHTML = "";
+        if (!Array.isArray(chamados)) {
+            console.error(chamados);
+            return;
+        }
 
-    chamados.forEach(c => {
-        const item = document.createElement("li");
-        item.innerHTML = `
-        <strong>${c.titulo}</strong> - ${c.status} <br>
-        ${c.descricao}<br>
-        <button onclick="atualizar(${c.id}, 'em andamento')">Em andamento</button>
-        <button onclick="atualizar(${c.id}, 'resolvido')">Resolver</button>
-        `;
-        lista.appendChild(item);
-    });
+        const lista = document.getElementById("lista");
+
+        lista.innerHTML = "";
+
+        chamados.forEach(c => {
+            const item = document.createElement("li");
+
+            item.innerHTML = `
+                <strong>${c.titulo}</strong> - ${c.status} <br>
+                ${c.descricao}<br><br>
+
+                <button onclick="atualizar(${c.id}, 'em andamento')">
+                    Em andamento
+                </button>
+
+                <button onclick="atualizar(${c.id}, 'resolvido')">
+                    Resolver
+                </button>
+            `;
+
+            lista.appendChild(item);
+        });
+
+    } catch (err) {
+        mostrarMensagem(err.message, "erro");
+    }
 }
 
 async function criarChamado() {
-    const titulo = document.getElementById("titulo").value;
-    const descricao = document.getElementById("descricao").value;
+    try {
+        const titulo = document.getElementById("titulo").value;
+        const descricao = document.getElementById("descricao").value;
 
-    await fetch("http://localhost:3000/chamados", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-        },
-        body: JSON.stringify({ titulo, descricao })
-    });
+        await fetch(`${API_URL}/chamados`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            body: JSON.stringify({ titulo, descricao })
+        });
 
-    carregarChamados();
+        document.getElementById("titulo").value = "";
+        document.getElementById("descricao").value = "";
+
+        mostrarMensagem("Chamado criado!", "sucesso");
+
+        carregarChamados();
+
+    } catch (err) {
+        mostrarMensagem(err.message, "erro");
+    }
 }
 
 async function atualizar(id, status) {
-      await fetch(`http://localhost:3000/chamados/${id}`, {
-        method: "PUT",
-        headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-        },
-        body: JSON.stringify({ status })
-    });
+    try {
+        await fetch(`${API_URL}/chamados/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            body: JSON.stringify({ status })
+        });
 
-    carregarChamados();
+        mostrarMensagem("Chamado atualizado!", "sucesso");
+
+        carregarChamados();
+
+    } catch (err) {
+        mostrarMensagem(err.message, "erro");
+    }
 }
 
 function mostrarMensagem(texto, tipo) {
     const el = document.getElementById("mensagem");
+
     el.innerText = texto;
     el.className = tipo;
+
     el.style.display = "block";
 
     setTimeout(() => {
@@ -135,6 +192,7 @@ function mostrarApp() {
 
 function logout() {
     token = "";
+
     localStorage.removeItem("token");
 
     document.getElementById("auth").style.display = "block";
