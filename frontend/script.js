@@ -1,4 +1,4 @@
-const API_URL = "https://SEU-APP.onrender.com";
+const API_URL = "https://alphadesk-backend-6zsz.onrender.com";
 
 let token = "";
 
