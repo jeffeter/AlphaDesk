@@ -1,41 +1,115 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaDesk</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="container">
 
-    <h1>AlphaDesk</h1>
+    <div class="card auth-card" id="auth">
+        <h1>🚀 AlphaDesk</h1>
+        <p>Sistema de gerenciamento de chamados</p>
 
-    <div id="mensagem" style="display:none;"></div>
-    <div id="loading" style="display:none;">Carregando...</div>
+        <input type="email" id="email" placeholder="Seu email">
+        <input type="password" id="senha" placeholder="Sua senha">
 
-
-    <div id="auth">
-        <input id="email" placeholder="Email">
-        <input id="senha" type="password" placeholder="Senha">
-
-        <button type="button" class="btn-primary" onclick="login()">Login</button>
-        <button type="button" class="btn-success" onclick="registrar()">Registrar</button>
+        <div class="buttons">
+            <button class="btn primary" onclick="login()">Entrar</button>
+            <button class="btn secondary" onclick="registrar()">Registrar</button>
+        </div>
     </div>
 
-    <!-- 🖥 APP -->
-    <div id="app" style="display:none;">
+    <div class="dashboard" id="app" style="display: none;">
 
-        <button class="btn-logout" onclick="logout()">Sair</button>
+        <aside class="sidebar">
+            <h2>🚀 AlphaDesk</h2>
 
-        <hr>
+            <nav>
+                <button class="menu-item active">
+                    📋 Chamados
+                </button>
 
-        <input id="titulo" placeholder="Título do chamado">
-        <input id="descricao" placeholder="Descrição">
+                <button class="menu-item">
+                    👤 Perfil
+                </button>
 
-        <button type="button" class="btn-primary" onclick="criarChamado()">Criar Chamado</button>
+                <button class="menu-item">
+                    ⚙️ Configurações
+                </button>
+            </nav>
 
-        <ul id="lista"></ul>
+            <button class="logout-btn" onclick="logout()">
+                🚪 Sair
+            </button>
+        </aside>
+
+        <main class="main-content">
+
+            <div class="top-dashboard">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Gerencie seus chamados</p>
+                </div>
+            </div>
+
+            <div class="cards">
+
+                <div class="stat-card">
+                    <h3>Total</h3>
+                    <span id="totalChamados">0</span>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Em andamento</h3>
+                    <span id="andamentoChamados">0</span>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Resolvidos</h3>
+                    <span id="resolvidosChamados">0</span>
+                </div>
+
+            </div>
+
+            <div class="novo-chamado">
+                <input id="titulo" placeholder="Título do chamado">
+
+                <textarea
+                    id="descricao"
+                    placeholder="Descreva o problema..."
+                ></textarea>
+
+                <button class="btn primary" onclick="criarChamado()">
+                    Criar Chamado
+                </button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                Carregando...
+            </div>
+
+            <div id="mensagem"></div>
+
+            <div class="filtros">
+                <button onclick="alterarFiltro('todos')">Todos</button>
+                <button onclick="alterarFiltro('aberto')">Aberto</button>
+                <button onclick="alterarFiltro('em aberto')">Em andamento</button>
+                <button onclick="alterarFiltro('resolvido')">Resolvidos</button>
+            </div>
+
+            <ul id="lista" class="lista-chamados"></ul>
+
+        </main>
 
     </div>
 

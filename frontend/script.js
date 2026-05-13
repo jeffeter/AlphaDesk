@@ -2,6 +2,8 @@ const API_URL = "https://alphadesk-backend-6zsz.onrender.com";
 
 let token = "";
 
+let filtroAtual = "todos";
+
 const savedToken = localStorage.getItem("token");
 
 if (savedToken) {
@@ -85,29 +87,57 @@ async function carregarChamados() {
 
         const chamados = await res.json();
 
-        if (!Array.isArray(chamados)) {
-            console.error(chamados);
-            return;
+        let chamadosFiltrados = chamados
+
+        if (filtroAtual !== "todos") {
+            chamadosFiltrados = chamados.filter(c => c.status === filtroAtual);
         }
+
+        document.getElementById("totalChamados").innerText =
+            chamados.length;
+
+        document.getElementById("andamentoChamados").innerText =
+            chamados.filter(c => c.status === "em andamento").length
+
+        document.getElementById("resolvidosChamados").innerText =
+            chamados.filter(c => c.status === "resolvido").length;
 
         const lista = document.getElementById("lista");
 
         lista.innerHTML = "";
 
-        chamados.forEach(c => {
+        chamadosFiltrados.forEach(c => {
             const item = document.createElement("li");
 
             item.innerHTML = `
-                <strong>${c.titulo}</strong> - ${c.status} <br>
-                ${c.descricao}<br><br>
+                <div class="chamado-header">
+                    <strong>${c.titulo}</strong>
+                    <span class="
+                        status-badge
+                        ${c.status === "resolvido" ? "status-resolvido" : ""}
+                        ${c.status === "em andamento" ? "status-andamento" : ""}
+                        ${c.status === "aberto" ? "status-aberto" : ""}
+                    ">
+                        ${c.status}
+                    </span>
+                </div>
 
-                <button onclick="atualizar(${c.id}, 'em andamento')">
-                    Em andamento
-                </button>
+                <p class="descricao">
+                    ${c.descricao}
+                </p>
 
-                <button onclick="atualizar(${c.id}, 'resolvido')">
-                    Resolver
-                </button>
+                <div class="acoes">
+
+                    <button onclick="atualizar(${c.id}, 'em andamento')">
+                        Em andamento
+                    </button>
+
+                    <button onclick="atualizar(${c.id}, 'resolvido')">
+                        Resolver
+                    </button>
+
+                </div>
+
             `;
 
             lista.appendChild(item);
@@ -199,4 +229,11 @@ function logout() {
     document.getElementById("app").style.display = "none";
 
     mostrarMensagem("Saiu da conta", "sucesso");
+}
+
+function alterarFiltro(status) {
+    
+    filtroAtual = status;
+
+    carregarChamados();
 }
