@@ -10,6 +10,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -81,8 +82,12 @@
 
             </div>
 
+            <div class="grafico-container">
+                <canvas id="graficoChamados"></canvas>
+            </div>
+
             <div class="novo-chamado">
-                <input id="titulo" placeholder="Título do chamado">
+                <input id="titulo" placeholder="Título do chamado" autocomplete="off">
 
                 <textarea
                     id="descricao"
@@ -103,7 +108,7 @@
             <div class="filtros">
                 <button onclick="alterarFiltro('todos')">Todos</button>
                 <button onclick="alterarFiltro('aberto')">Aberto</button>
-                <button onclick="alterarFiltro('em aberto')">Em andamento</button>
+                <button onclick="alterarFiltro('em andamento')">Em andamento</button>
                 <button onclick="alterarFiltro('resolvido')">Resolvidos</button>
             </div>
 
@@ -115,6 +120,8 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>

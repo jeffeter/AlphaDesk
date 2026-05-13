@@ -1,8 +1,8 @@
 const API_URL = "https://alphadesk-backend-6zsz.onrender.com";
 
 let token = "";
-
 let filtroAtual = "todos";
+let grafico;
 
 const savedToken = localStorage.getItem("token");
 
@@ -102,6 +102,63 @@ async function carregarChamados() {
         document.getElementById("resolvidosChamados").innerText =
             chamados.filter(c => c.status === "resolvido").length;
 
+        const abertos = 
+            chamados.filter(c => c.status ==='aberto').length;
+        const andamento = 
+            chamados.filter(c => c.status ==='em andamento').length;
+        const resolvidos =
+            chamados.filter(c => c.status ==='resolvido').length;
+        
+        if (grafico) {
+            grafico.destroy();
+        }
+
+        const ctx =
+            document.getElementById("graficoChamados").getContext("2d");
+
+        grafico = new Chart(ctx, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Abertos",
+                    "Em andamento",
+                    "Resolvidos"
+                ],
+
+                datasets: [{
+
+                    data: [
+                        abertos,
+                        andamento,
+                        resolvidos
+                    ],
+
+                    backgroundColor: [
+                        "#3b82f6",
+                        "#f59e0b",
+                        "#22c55e"
+                    ],
+
+                    borderWidth: 0
+                }]
+            },
+
+            options: {
+
+                plugins: {
+
+                    legend: {
+                        labels: {
+                            color: "white"
+                        }
+                    }
+                }
+            }
+        });
+        
         const lista = document.getElementById("lista");
 
         lista.innerHTML = "";
@@ -152,6 +209,11 @@ async function criarChamado() {
     try {
         const titulo = document.getElementById("titulo").value;
         const descricao = document.getElementById("descricao").value;
+
+        if (!titulo || !descricao) {
+            mostrarMensagem("Preencha Todos os campos", "erro");
+            return;
+        }
 
         await fetch(`${API_URL}/chamados`, {
             method: "POST",

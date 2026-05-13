@@ -10,16 +10,12 @@ body {
     color: white;
     min-height: 100vh;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     padding: 30px;
 }
 
 .container {
     width: 100%;
-    max-width: 900px;
+    min-height: 100vh;
 }
 
 .card {
@@ -134,6 +130,8 @@ textarea {
     margin-bottom: 15px;
 
     line-height: 1.6;
+
+    transition: 0.2s;
 }
 
 .lista-chamados strong {
@@ -300,7 +298,7 @@ textarea {
     }
 
     .sidebar nav {
-        flex-direction: row;
+        flex-direction: wrap;
     }
 }
 
@@ -345,10 +343,6 @@ textarea {
     gap: 10px;
 }
 
-.lista-chamados li {
-    transition: 0.2s;
-}
-
 .lista-chamados li:hover {
     transform: translateY(-4px);
 
@@ -382,4 +376,15 @@ textarea {
 
 .filtros button:hover {
     background: #2563eb;
+}
+
+.grafico-container {
+    background: #111827;
+
+    border: 1px solid #1f2937;
+    border-radius: 20px;
+
+    padding: 20px;
+
+    margin-bottom: 30px;
 }
