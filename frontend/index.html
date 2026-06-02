@@ -47,11 +47,13 @@
                 <button class="menu-item">
                     ⚙️ Configurações
                 </button>
+                
             </nav>
 
-            <button class="logout-btn" onclick="logout()">
-                🚪 Sair
+           <button class="logout-btn" onclick="logout()">
+            🚪 Sair
             </button>
+
         </aside>
 
         <main class="main-content">
@@ -63,40 +65,48 @@
                 </div>
             </div>
 
-            <div class="cards">
+            <div class="dashboard-resumo">
 
-                <div class="stat-card">
-                    <h3>Total</h3>
-                    <span id="totalChamados">0</span>
+                <div class="cards">
+
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <span id="totalChamados">0</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Em andamento</h3>
+                        <span id="andamentoChamados">0</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Resolvidos</h3>
+                        <span id="resolvidosChamados">0</span>
+                    </div>
+
                 </div>
 
-                <div class="stat-card">
-                    <h3>Em andamento</h3>
-                    <span id="andamentoChamados">0</span>
-                </div>
-
-                <div class="stat-card">
-                    <h3>Resolvidos</h3>
-                    <span id="resolvidosChamados">0</span>
+                <div class="grafico-container">
+                    <canvas id="graficoChamados"></canvas>
                 </div>
 
             </div>
 
-            <div class="grafico-container">
-                <canvas id="graficoChamados"></canvas>
-            </div>
+            <div class="card novo-chamado">
 
-            <div class="novo-chamado">
-                <input id="titulo" placeholder="Título do chamado" autocomplete="off">
+                <h2>Novo Chamado</h2>
+                <p>Abra um novo chamado para suporte</p>
 
-                <textarea
-                    id="descricao"
-                    placeholder="Descreva o problema..."
-                ></textarea>
+                <input id="titulo" placeholder="Titulo do chamado">
 
-                <button class="btn primary" onclick="criarChamado()">
+                <textarea id="descricao" placeholder="Descreva o Problema"></textarea>
+
+                <button
+                    class="btn primary"
+                    onclick="criarChamado()">
                     Criar Chamado
                 </button>
+
             </div>
 
             <div id="loading" class="loading" style="display: none;">
@@ -104,14 +114,15 @@
             </div>
 
             <div id="mensagem"></div>
-
-            <div class="filtros">
-                <button onclick="alterarFiltro('todos')">Todos</button>
-                <button onclick="alterarFiltro('aberto')">Aberto</button>
-                <button onclick="alterarFiltro('em andamento')">Em andamento</button>
-                <button onclick="alterarFiltro('resolvido')">Resolvidos</button>
+            <div class="top-lista">
+                <h2>Chamados</h2>
+                <div class="filtros">
+                    <button onclick="alterarFiltro('todos')">Todos</button>
+                    <button onclick="alterarFiltro('aberto')">Aberto</button>
+                    <button onclick="alterarFiltro('em andamento')">Em andamento</button>
+                    <button onclick="alterarFiltro('resolvido')">Resolvidos</button>
+                </div>
             </div>
-
             <ul id="lista" class="lista-chamados"></ul>
 
         </main>

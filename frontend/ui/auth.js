@@ -4,7 +4,7 @@ function mostrarApp() {
         .style.display = "none";
 
     document.getElementById("app")
-        .style.display = "block";
+        .style.display = "flex";
 }
 
 
@@ -15,7 +15,7 @@ function logout() {
     localStorage.removeItem("token");
 
     document.getElementById("auth")
-        .style.display = "block";
+        .style.display = "none";
 
     document.getElementById("app")
         .style.display = "none";
